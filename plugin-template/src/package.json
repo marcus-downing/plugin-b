@@ -1,0 +1,25 @@
+{
+  "name": "plugin-name",
+  "title": "Your plugin",
+  "description": "Description of your plugin",
+  "homepage": "http://example.com/",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "private": true,
+  "license": "none",
+  "version": "0.0.0",
+  "author": {
+    "name" : "",
+    "email" : "",
+    "url" : ""
+  },
+  "dependencies": {
+    "grunt": "~0.4.5",
+    "plugin-b": "git://github.com/marcusatbang/plugin-b.git#master"
+  },
+  "config": {
+  }
+}
+
