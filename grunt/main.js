@@ -4,13 +4,11 @@ module.exports = function (grunt, _) {
   var pluginName = grunt.pkg.name;
   grunt.log.writeln("Building '"+pluginName+"': "+grunt.pkg.title);
 
-  var mainFile = grunt.dirs.coreSource+'/lib/main.php';
-
   grunt.config.merge({
     concat: {
 
       main: {
-        src: mainFile,
+        src: grunt.dirs.coreSource+'/lib/main.php',
         dest: grunt.dest+'/'+pluginName+'.php',
         options: {
           process: function (src) {
@@ -39,6 +37,13 @@ module.exports = function (grunt, _) {
             
           }
         }
+      }
+
+    },
+    copy: {
+
+      classes: {
+        src: grunt.dirs.pluginSource
       }
 
     }

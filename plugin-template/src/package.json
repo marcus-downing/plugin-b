@@ -16,10 +16,8 @@
     "url" : ""
   },
   "dependencies": {
-    "grunt": "~0.4.5",
+    "grunt": "",
     "plugin-b": "git://github.com/marcusatbang/plugin-b.git#master"
-  },
-  "config": {
   }
 }
 
