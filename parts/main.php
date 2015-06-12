@@ -6,7 +6,11 @@
 <%= includes %>
 
 spl_autoload_register(function ($class) {
-  $class = str_replace("\\", "/", $class);
-  @include_once 'classes/'.$class.'.class.php';
+  $path = __DIR__.'/classes/'.trim(str_replace("\\", DIRECTORY_SEPARATOR, $class), DIRECTORY_SEPARATOR).'.class.php';
+  syslog(LOG_NOTICE, "Autoloading class from file: $path");
+  if (file_exists($path))
+    include $path;
 });
+
+<%= widgets %>
 

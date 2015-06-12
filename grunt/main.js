@@ -3,6 +3,8 @@
 module.exports = function (grunt, _) {
   var pluginName = grunt.pkg.name;
   grunt.log.writeln("Building '"+pluginName+"': "+grunt.pkg.title);
+  var namespace = grunt.pkg.namespace.replace('\\', '/');
+  grunt.log.writeln("Namespace: "+namespace);
 
   grunt.config.merge({
     concat: {
@@ -32,6 +34,7 @@ module.exports = function (grunt, _) {
 
             var activationCode = "";
             var includesCode = "";
+            var widgetsCode = "";
 
             activationCode = "register_activation_hook(__FILE__, function () {\n  include_once 'inc/activate.php';\n});";
 
@@ -40,6 +43,7 @@ module.exports = function (grunt, _) {
                 banner: pluginBanner,
                 activation: activationCode,
                 includes: includesCode,
+                widgets: widgetsCode,
               }
             });
             
@@ -55,7 +59,7 @@ module.exports = function (grunt, _) {
           expand: true, 
           cwd: grunt.dirs.pluginSource+'/classes/',
           src: ['**'],
-          dest: grunt.dirs.dest+'/classes/'
+          dest: grunt.dirs.dest+'/classes/'+namespace+'/'
         }]
       }
 

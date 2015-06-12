@@ -49,13 +49,18 @@ These details will be directly copied into the plugin's header and used by WordP
     "grunt": "",
     "plugin-b": "git://github.com/marcusatbang/plugin-b.git#master"
   },
-  "namespace": "MrFantastic\fantastic_plugin"
+  "namespace": "MrFantastic\\fantastic_plugin"
 }
 ```
 
 Most of the fields in this file match the Grunt specification. The non-standard ones are:
 
- * `namespace`: The PHP namespace of your plugin's classes and functions.
+ * `namespace`: The PHP namespace of all your plugin's classes and functions, not including the preceding `\`.
+   For example, if all your classes follow the pattern `\MyCompany\my_plugin\MyClass`, 
+   then the plugin's namespace should be `MyCompany\my_plugin`.
+   Namespaces in PHP should use underscores `_` rather than dashes `-`;
+   they can use uppercase letters if you wish, provided they're used consistently.
+   Note that backslashes must be correctly escaped in JSON. 
 
 You need to keep the two `dependencies`. You can add other dependencies if you wish.
 
