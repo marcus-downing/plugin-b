@@ -18,6 +18,7 @@
   "dependencies": {
     "grunt": "",
     "plugin-b": "git://github.com/marcusatbang/plugin-b.git#master"
-  }
+  },
+  "namespace": "namespace"
 }
 

@@ -48,9 +48,14 @@ These details will be directly copied into the plugin's header and used by WordP
   "dependencies": {
     "grunt": "",
     "plugin-b": "git://github.com/marcusatbang/plugin-b.git#master"
-  }
+  },
+  "namespace": "MrFantastic\fantastic_plugin"
 }
 ```
+
+Most of the fields in this file match the Grunt specification. The non-standard ones are:
+
+ * `namespace`: The PHP namespace of your plugin's classes and functions.
 
 You need to keep the two `dependencies`. You can add other dependencies if you wish.
 
