@@ -59,7 +59,7 @@ Most of the fields in this file match the Grunt specification. The non-standard 
 
  * `namespace`: The PHP namespace of all your plugin's classes and functions.
 
-### Namespaces
+#### Namespaces
 
 Namespaces in PHP should use underscores `_` rather than dashes `-`;
 they can use uppercase letters if you wish, provided they're used consistently.
