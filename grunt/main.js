@@ -7,9 +7,10 @@ module.exports = function (grunt, _) {
   grunt.config.merge({
     concat: {
 
+      //  Copy the main plugin.php file, customising it to fit
       main: {
-        src: grunt.dirs.coreSource+'/lib/main.php',
-        dest: grunt.dest+'/'+pluginName+'.php',
+        src: grunt.dirs.coreSource+'/parts/main.php',
+        dest: grunt.dirs.dest+'/'+pluginName+'.php',
         options: {
           process: function (src) {
 
@@ -29,9 +30,16 @@ module.exports = function (grunt, _) {
                 }
               });
 
+            var activationCode = "";
+            var includesCode = "";
+
+            activationCode = "register_activation_hook(__FILE__, function () {\n  include_once 'inc/activate.php';\n});";
+
             return grunt.template.process(src, {
               data: {
-                banner: pluginBanner
+                banner: pluginBanner,
+                activation: activationCode,
+                includes: includesCode,
               }
             });
             
@@ -43,7 +51,12 @@ module.exports = function (grunt, _) {
     copy: {
 
       classes: {
-        src: grunt.dirs.pluginSource
+        files: [{
+          expand: true, 
+          cwd: grunt.dirs.pluginSource+'/classes/',
+          src: ['**'],
+          dest: grunt.dirs.dest+'/classes/'
+        }]
       }
 
     }

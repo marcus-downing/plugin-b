@@ -17,7 +17,7 @@ module.exports = function (grunt, _) {
   
 
   //  functions to find files across multiple source folders
-  grunt.tools = {
+  grunt.plugin_b = {
     isValidFile: function (file) {
       var paths = file.split('/');
       var fn = _.last(paths);

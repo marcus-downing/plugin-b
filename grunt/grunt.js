@@ -17,16 +17,6 @@ module.exports = function (grunt) {
   var pkgFile = path.normalize(grunt.dirs.pluginSource+'/package.json');
   grunt.pkg = grunt.file.readJSON(pkgFile);
 
-  // build the config from each source's package.json
-  // grunt.pluginConfig = {}
-  // _(grunt.sources).each(function (src) {
-  //   var pkgFile = src+'/package.json';
-  //   if (grunt.file.exists(pkgFile)) {
-  //     var pkg = grunt.file.readJSON(pkgFile);
-  //     _.defaults(grunt.pluginConfig, pkg.config);
-  //   }
-  // });
-
   // load tasks
   var cwd = process.cwd();
   process.chdir(grunt.dirs.coreSource);
@@ -40,5 +30,5 @@ module.exports = function (grunt) {
   require('./stylesheets.js')(grunt, _);
 
   // push the tasks
-  grunt.registerTask('default', [ 'concat' ]);
+  grunt.registerTask('default', [ 'concat', 'copy' ]);
 };
