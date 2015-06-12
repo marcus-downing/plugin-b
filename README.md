@@ -53,9 +53,13 @@ These details will be directly copied into the plugin's header and used by WordP
 }
 ```
 
+You need to keep the two `dependencies`. You can add other dependencies if you wish.
+
 Most of the fields in this file match the Grunt specification. The non-standard ones are:
 
  * `namespace`: The PHP namespace of all your plugin's classes and functions.
+
+### Namespaces
 
 Namespaces in PHP should use underscores `_` rather than dashes `-`;
 they can use uppercase letters if you wish, provided they're used consistently.
@@ -71,8 +75,6 @@ Instead put this in your `package.json` file:
 ```json
   "namespace": ""
 ```
-
-You need to keep the two `dependencies`. You can add other dependencies if you wish.
 
 ### Install node modules
 
