@@ -22,7 +22,7 @@ src/   dist/
 
 You should only ever edit files in `src`. Initially the `dist` folder should be empty.
 
-### Customise the template
+### Customise the plugin info
 
 Edit the `package.json` file to set your plugin's name, description, homepage, author details etc.
 These details will be directly copied into the plugin's header and used by WordPress.
@@ -97,3 +97,53 @@ $ grunt
 This should build your plugin, putting all the compiled files into the `dist` folder.
 
 You do not need to edit the `Gruntfile.js` in your `src`.
+
+
+## Add plugin parts
+
+### Includes
+
+These PHP files are loaded and processed on every page.
+
+### Classes
+
+Classes should be put into the `classes` folder,
+in files called _ClassName_`.class.php`.
+All your classes should be within the plugin's namespace.
+
+`classes/FantasticClass.class.php`:
+
+```php
+<?php
+
+namespace MrFantastic\fantastic_plugin;
+
+class FantasticClass {
+  function __construct () {
+
+  }
+}
+```
+
+### Widgets
+
+Widgets behave slightly differently from other classes, in that they get loaded and registered with WordPress.
+
+### LESS / CSS
+
+### JavaScript
+
+### Images
+
+### Settings
+
+### Activation
+
+
+## Code conventions
+
+
+
+### WordPress actions and filters
+
+Your plugin's hooks should include

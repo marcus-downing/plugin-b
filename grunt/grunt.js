@@ -1,11 +1,8 @@
 module.exports = function (grunt) {
-  var fs = require('fs'),
-      util = require('util'),
-      path = require('path'),
-      _ = require('lodash-node');
+  var path = require('path');
 
   //  load utils and polyfill early
-  require('./util.js')(grunt, _);
+  require('./util.js')(grunt);
 
   // set up some data
   grunt.dirs = {
@@ -25,9 +22,9 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   //  our various build modules
-  require('./main.js')(grunt, _);
-  require('./javascript.js')(grunt, _);
-  require('./stylesheets.js')(grunt, _);
+  require('./main.js')(grunt);
+  require('./javascript.js')(grunt);
+  require('./stylesheets.js')(grunt);
 
   // push the tasks
   grunt.registerTask('default', [ 'concat', 'copy' ]);

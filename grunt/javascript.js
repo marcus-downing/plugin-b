@@ -1,3 +1,3 @@
-module.exports = function (grunt, _) {
+module.exports = function (grunt) {
   
 }

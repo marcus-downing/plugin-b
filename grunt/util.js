@@ -1,6 +1,7 @@
-module.exports = function (grunt, _) {
-  var fs = require('fs')
-    , path = require('path');
+module.exports = function (grunt) {
+  var fs = require('fs'),
+      path = require('path'),
+      _ = require('lodash-node');
 
   //  polyfill for possibly missing functions
   if (!String.prototype.startsWith) {
