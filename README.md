@@ -94,9 +94,15 @@ In the `src` folder of your plugin, run this:
 $ grunt
 ```
 
-This should build your plugin, putting all the compiled files into the `dist` folder.
+Or alternatively:
 
-You do not need to edit the `Gruntfile.js` in your `src`.
+```sh
+$ make
+```
+
+Either command will build your plugin, putting all the compiled files into the `dist` folder.
+
+You should never need to edit the `Gruntfile.js` or the `Makefile` in your `src`. The `Makefile` should do nothing but call `grunt` for you; it's there simply as a convenience for systems that don't know anything about Grunt.
 
 
 ## Add plugin parts

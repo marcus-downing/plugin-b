@@ -62,7 +62,7 @@ module.exports = function (grunt) {
             var widgetsDir = grunt.dirs.pluginSource+'/widgets/';
             _.forEach(fs.readdirSync(widgetsDir), function (file) {
               if (_.endsWith(file, ".php")) {
-                widgetsCode += "include_once 'widgets/"+namespace+"/"+file+"';\n";
+                widgetsRegisterCode += "  include_once 'widgets/"+namespace+"/"+file+"';\n";
                 if (_.endsWith(file, "_Widget.class.php")) {
                   className = file.replace('.class.php', '');
                   widgetsRegisterCode += "  register_widget('"+namespaceEscaped+"\\"+className+"');\n";
