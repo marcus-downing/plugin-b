@@ -102,7 +102,8 @@ $ make
 
 Either command will build your plugin, putting all the compiled files into the `dist` folder.
 
-You should never need to edit the `Gruntfile.js` or the `Makefile` in your `src`. The `Makefile` should do nothing but call `grunt` for you; it's there simply as a convenience for systems that don't know anything about Grunt.
+You should never need to edit the `Gruntfile.js` or the `Makefile` in your `src`.
+The `Makefile` should do nothing but call `grunt` for you; it's there simply as a convenience for systems that don't know anything about Grunt.
 
 
 ## Add plugin parts
@@ -110,6 +111,29 @@ You should never need to edit the `Gruntfile.js` or the `Makefile` in your `src`
 ### Includes
 
 These PHP files are loaded and processed on every page.
+Put include files into the `lib` folder.
+
+`lib/do_stuff.php`
+
+```php
+<?php
+
+namespace MrFantastic\fantastic_plugin;
+
+function doStuff() {
+  # ...
+}
+```
+
+The above function will exist in a PHP namespace, so it would be called with:
+
+```php
+\MrFantastic\fantastic_plugin\doStuff()
+```
+
+Most functions should be within the plugin's namespace, except functions that you wish to be easily accessible from outside code, typically in a file called `api.php`.
+See _Coding Conventions_ below for more detail.
+
 
 ### Classes
 
@@ -131,9 +155,31 @@ class FantasticClass {
 }
 ```
 
+Note that, for the sake of autoloading, classes will be put into folders matching the namespace.
+For example, the above class would be copied into `dist/MrFantastic/fantastic_plugin/FantasticClass.class.php`.
+
 ### Widgets
 
 Widgets behave slightly differently from other classes, in that they get loaded and registered with WordPress.
+Widget classes should be put into the `widgets` folder, in files called _WidgetName_`_Widget.class.php`.
+All your widget classes should be within the plugin's namespace.
+
+`widgets/Fantastic_Widget.class.php`:
+
+```php
+<?php
+
+namespace MrFantastic\fantastic_plugin;
+
+class Fantastic_Widget extends \WP_Widget {
+  function __construct() {
+    $this->WP_Widget('Fantastic_Widget', 'Fantastic Widget', array(
+      'classname' => 'Fantastic_Widget',
+      'description' => 'A truly fantastic widget',
+    ));
+  }
+}
+```
 
 ### LESS / CSS
 
@@ -145,11 +191,44 @@ Widgets behave slightly differently from other classes, in that they get loaded 
 
 ### Activation
 
+Code which should be called whenever the plugin
 
-## Code conventions
+## Coding conventions
 
+Where possible you should follow WordPress' coding standards, with the following exceptions and clarifications.
 
+### Namespaces
 
-### WordPress actions and filters
+You should use a PHP namespace for your plugin.
+This helps to disambiguate names, preventing your plugin's functions and classes from clashing with any other plugins or WordPress itself.
 
-Your plugin's hooks should include
+Almost every PHP file in your project should begin with an appropriate namespace declaration:
+
+```php
+<?php
+namespace MrFantastic\fantastic_plugin;
+```
+
+### Actions and filters
+
+WordPress plugins are built on a system of hooks:
+*actions* are called to give plugins the chance to act at a specific time, 
+while *filters* are called to give plugins the chance to change a value.
+
+As well as consuming existing hooks, consider publishing your own to make it possible for other plugins to affect the behaviour of your plugin in safe ways.
+For disambiguation, your plugin's hooks should include your namespace separated by colons:
+
+```php
+$settings = apply_filters('MrFantastic:fantastic_plugin:settings' $settings);
+do_action('MrFantastic:fantastic_plugin:save_settings');
+```
+
+When you publish a filter, you should be careful about trusting the value that comes back from it.
+
+When you publish an action relating to an event in your plugin, consider publishing two actions: one `_before` and one `_after`.
+
+```php
+do_action('MrFantastic:fantastic_plugin:before_save_settings');
+save_settings();
+do_action('MrFantastic:fantastic_plugin:after_save_settings');
+```
