@@ -74,7 +74,7 @@ Note that backslashes must be correctly escaped as `\\` in JSON.
 In the `src` folder of your plugin, run this:
 
 ```sh
-$ npm install
+$ make install
 ```
 
 This should fetch all the dependencies you need.
@@ -84,19 +84,13 @@ This should fetch all the dependencies you need.
 In the `src` folder of your plugin, run this:
 
 ```sh
-$ grunt
-```
-
-Or alternatively:
-
-```sh
 $ make
 ```
 
-Either command will build your plugin, putting all the compiled files into the `dist` folder.
+This command will build your plugin, putting all the compiled files into the `dist` folder.
 
 You should never need to edit the `Gruntfile.js` or the `Makefile` in your `src`.
-The `Makefile` should do nothing but call `grunt` for you; it's there simply as a convenience for systems that don't know anything about Grunt.
+The `Makefile` does nothing but call `grunt` and `npm` for you; it's there simply as a convenience.
 
 
 ## Add plugin parts
