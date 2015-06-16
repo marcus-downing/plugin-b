@@ -4,7 +4,6 @@
 
 <%= init %>
 <%= activation %>
-<%= includes %>
 
 spl_autoload_register(function ($class) {
   $path = __DIR__.'/classes/'.trim(str_replace("\\", DIRECTORY_SEPARATOR, $class), DIRECTORY_SEPARATOR).'.class.php';
@@ -13,5 +12,7 @@ spl_autoload_register(function ($class) {
   }
 });
 
+<%= includes %>
+<%= settings %>
 <%= widgets %>
 

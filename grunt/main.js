@@ -6,8 +6,10 @@ module.exports = function (grunt) {
 
   var pluginName = grunt.pkg.name;
   grunt.log.writeln("Building '"+pluginName+"': "+grunt.pkg.title);
-  var namespace = grunt.pkg.namespace.replace('\\', '/');
-  var namespaceEscaped = grunt.pkg.namespace.replace('\\', '\\\\');
+
+  var namespace = grunt.pkg.namespace.replace('^\\', '');
+  var namespacePath = namespace.replace('\\', '/');
+  var namespaceEscaped = namespace.replace('\\', '\\\\');
   grunt.log.writeln("Namespace: "+namespace);
 
   grunt.config.merge({
@@ -41,9 +43,10 @@ module.exports = function (grunt) {
             var includesCode = "";
             var widgetsCode = "";
             var widgetsRegisterCode = "";
+            var settingsCode = "";
 
             if (fs.existsSync("lib/init.php")) {
-              initCode = "include_once 'lib/"+namespace+"/init.php';\n";
+              initCode = "include_once 'lib/"+namespacePath+"/init.php';\n";
             }
 
             var activateDir = grunt.dirs.pluginSource+'/activate/';
@@ -54,18 +57,22 @@ module.exports = function (grunt) {
             // var includesDir = "./lib/";
             var includesDir = grunt.dirs.pluginSource+"/lib/";
             _.forEach(fs.readdirSync(includesDir), function (file) {
-              if (_.endsWith(file, ".php")  && file != "init.php") {
-                includesCode += "include_once 'lib/"+namespace+"/"+file+"';\n";
+              if (_.endsWith(file, ".php") && file != "init.php" && file != "settings.php") {
+                includesCode += "include_once 'lib/"+file+"';\n";
               }
             });
+
+            if (fs.existsSync("lib/settings.php")) {
+              settingsCode = "add_action('admin_menu', function () {\n  add_options_page('"+grunt.pkg.title+"', '"+grunt.pkg.title+"', 'manage_options', '"+pluginName+"', function () {\n    include 'lib/settings.php';\n  });\n});\n";
+            }
 
             var widgetsDir = grunt.dirs.pluginSource+'/widgets/';
             _.forEach(fs.readdirSync(widgetsDir), function (file) {
               if (_.endsWith(file, ".php")) {
-                widgetsRegisterCode += "  include_once 'widgets/"+namespace+"/"+file+"';\n";
+                widgetsRegisterCode += "  include_once 'widgets/"+file+"';\n";
                 if (_.endsWith(file, "_Widget.class.php")) {
                   className = file.replace('.class.php', '');
-                  widgetsRegisterCode += "  register_widget('"+namespaceEscaped+"\\"+className+"');\n";
+                  widgetsRegisterCode += "  register_widget('\\"+namespace+"\\"+className+"');\n";
                 }
               }
             });
@@ -78,6 +85,7 @@ module.exports = function (grunt) {
                 banner: pluginBanner,
                 init: initCode,
                 activation: activationCode,
+                settings: settingsCode,
                 includes: includesCode,
                 widgets: widgetsCode,
               }
@@ -95,7 +103,16 @@ module.exports = function (grunt) {
           expand: true, 
           cwd: grunt.dirs.pluginSource+'/classes/',
           src: ['**'],
-          dest: grunt.dirs.dest+'/classes/'+namespace+'/'
+          dest: grunt.dirs.dest+'/classes/'+namespacePath+'/'
+        }]
+      },
+
+      baseClasses: {
+        files: [{
+          expand: true, 
+          cwd: grunt.dirs.coreSource+'/classes/',
+          src: ['**'],
+          dest: grunt.dirs.dest+'/classes/Plugin_b/'
         }]
       },
 
@@ -104,7 +121,7 @@ module.exports = function (grunt) {
           expand: true, 
           cwd: grunt.dirs.pluginSource+'/widgets/',
           src: ['**'],
-          dest: grunt.dirs.dest+'/widgets/'+namespace+'/'
+          dest: grunt.dirs.dest+'/widgets/'
         }]
       },
 
@@ -113,7 +130,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: grunt.dirs.pluginSource+'/lib/',
           src: ['**'],
-          dest: grunt.dirs.dest+'/lib/'+namespace+'/'
+          dest: grunt.dirs.dest+'/lib/'
         }]
       },
 
