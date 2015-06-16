@@ -1,2 +1,5 @@
 all:
-  @grunt
+	@grunt
+
+install:
+	npm install
