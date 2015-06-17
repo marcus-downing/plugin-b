@@ -15,4 +15,6 @@ spl_autoload_register(function ($class) {
 <%= includes %>
 <%= settings %>
 <%= widgets %>
-
+add_action('init', function () {
+  <%= i18n %>
+});

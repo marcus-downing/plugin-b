@@ -80,6 +80,8 @@ module.exports = function (grunt) {
               widgetsCode += "\nadd_action('widgets_init', function () {\n"+widgetsRegisterCode+"});\n\n";
             }
 
+            var i18nCode = "load_plugin_textdomain('"+pluginName+"', false, dirname(plugin_basename(__FILE__)).'/languages');"
+
             return grunt.template.process(src, {
               data: {
                 banner: pluginBanner,
@@ -88,6 +90,7 @@ module.exports = function (grunt) {
                 settings: settingsCode,
                 includes: includesCode,
                 widgets: widgetsCode,
+                i18n: i18nCode,
               }
             });
             
