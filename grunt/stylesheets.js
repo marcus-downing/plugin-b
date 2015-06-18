@@ -32,10 +32,11 @@ module.exports = function (grunt) {
       });
       grunt.defaultTasks.push('sass');
     }
+  }
 
 
   //  LESS
-  } else if (fs.existsSync("less")) {
+  if (fs.existsSync("less")) {
     grunt.log.writeln("Using LESS stylesheets");
 
     var lessOptions = {};
@@ -62,7 +63,11 @@ module.exports = function (grunt) {
       grunt.defaultTasks.push('less');
     }
 
-  } else if (fs.existsSync("css")) {
+  }
+
+
+  //  Plain old CSS
+  if (fs.existsSync("css")) {
     grunt.log.writeln("Using CSS stylesheets");
 
     grunt.config.merge({
