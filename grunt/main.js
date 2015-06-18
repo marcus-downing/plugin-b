@@ -1,4 +1,5 @@
-// Build the plugin's metadata
+//  Build the plugin's main PHP file, and copy the various classes, widgets and include files that go with it into
+//  their respective folders
 
 module.exports = function (grunt) {
   var fs = require('fs'),

@@ -2,19 +2,6 @@ module.exports = function (grunt) {
   var fs = require('fs'),
       path = require('path'),
       _ = require('lodash-node');
-
-  //  polyfill for possibly missing functions
-  if (!String.prototype.startsWith) {
-    Object.defineProperty(String.prototype, 'startsWith', {
-      enumerable: false,
-      configurable: false,
-      writable: false,
-      value: function(searchString, position) {
-        position = position || 0;
-        return this.lastIndexOf(searchString, position) === position;
-      }
-    });
-  }
   
 
   //  functions to find files across multiple source folders
@@ -209,11 +196,11 @@ module.exports = function (grunt) {
         sets = grunt.wb.locateFolders(sets);
       }
       return _(sets).map(function (set) {
-        if (filename.startsWith(set))
+        if (_(filename).startsWith(set))
           return filename.substr(set.length);
         return false;
       }).compact().map(function (local) {
-        if (local.startsWith('/'))
+        if (_(local).startsWith('/'))
           local = local.substr(1);
         return local;
       }).first();

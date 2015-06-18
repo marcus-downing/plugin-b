@@ -22,10 +22,11 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   //  our various build modules
-  require('./main.js')(grunt);
+  grunt.defaultTasks = [ 'concat', 'copy' ];
   require('./javascript.js')(grunt);
   require('./stylesheets.js')(grunt);
+  require('./main.js')(grunt);
 
   // push the tasks
-  grunt.registerTask('default', [ 'concat', 'copy' ]);
+  grunt.registerTask('default', grunt.defaultTasks);
 };
