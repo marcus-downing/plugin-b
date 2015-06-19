@@ -45,6 +45,7 @@ module.exports = function (grunt) {
             var widgetsCode = "";
             var widgetsRegisterCode = "";
             var settingsCode = "";
+            var stylesheetCode = "";
 
             if (fs.existsSync("lib/init.php")) {
               initCode = "include_once 'lib/"+namespacePath+"/init.php';\n";
@@ -64,7 +65,8 @@ module.exports = function (grunt) {
             });
 
             if (fs.existsSync("lib/settings.php")) {
-              settingsCode = "add_action('admin_menu', function () {\n  add_options_page('"+grunt.pkg.title+"', '"+grunt.pkg.title+"', 'manage_options', '"+pluginName+"', function () {\n    include 'lib/settings.php';\n  });\n});\n";
+              var settingsFunction = "add_options_page";
+              settingsCode = "add_action('admin_menu', function () {\n  "+settingsFunction+"('"+grunt.pkg.title+"', '"+grunt.pkg.title+"', 'manage_options', '"+pluginName+"', function () {\n    include '"+pluginName+"-settings.php';\n  });\n});\n";
             }
 
             var widgetsDir = grunt.dirs.pluginSource+'/widgets/';
@@ -81,7 +83,11 @@ module.exports = function (grunt) {
               widgetsCode += "\nadd_action('widgets_init', function () {\n"+widgetsRegisterCode+"});\n\n";
             }
 
-            var i18nCode = "load_plugin_textdomain('"+pluginName+"', false, dirname(plugin_basename(__FILE__)).'/languages');"
+            var i18nCode = "load_plugin_textdomain('"+pluginName+"', false, dirname(plugin_basename(__FILE__)).'/languages');";
+
+            if (_(grunt.knownStylesheets).includes('admin.css')) {
+              
+            }
 
             return grunt.template.process(src, {
               data: {
@@ -95,6 +101,21 @@ module.exports = function (grunt) {
               }
             });
             
+          }
+        }
+      },
+
+      settings: {
+        src: grunt.dirs.coreSource+'/parts/settings.php',
+        dest: grunt.dirs.dest+'/'+pluginName+'-settings.php',
+        options: {
+          process: function (src) {
+            return grunt.template.process(src, {
+              data: {
+                title: grunt.pkg.title,
+                icon: "themes",
+              }
+            })
           }
         }
       }
