@@ -1,13 +1,22 @@
 # Plugin b
 
-A small framework for building WordPress plugins with Grunt.
+A tool for building WordPress plugins using Grunt.
+
+## What this is
 
 This tool is intended to help you build great WordPress plugins, that follow the guidelines and perform well.
 It does this by separating out the sources you edit from the compiled plugin,
 and uses Grunt to connect the two.
 It also encourages some coding conventions to ensure plugins are well built.
 
-Plugin b framework requires PHP 5.3, and works best on a Unix, Linux or Mac OS platform.
+This is not a framework, at least in the classic sense.
+When this tool has worked its magic the resulting plugin is entirely self-contained 
+and has no further dependencies on the tool.
+It doesn't fill your plugins with lots of useless boilerplate.
+Use this tool to help you build small, perfectly formed plugins, not bloated monsters.
+
+Plugin b requires Node.js, and works best on a Unix, Linux or Mac OS platform.
+It expects at least PHP 5.3, and a reasonably modern version of WordPress.
 
 ## Getting started
 
