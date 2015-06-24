@@ -4,14 +4,14 @@
   "version": "0.0.0",
   "homepage": "https://github.com/marcusatbang/plugin-b",
   "repository": {
-    "type" : "git",
-    "url" : "http://github.com/marcusatbang/plugin-b.git"
+    "type": "git",
+    "url": "http://github.com/marcusatbang/plugin-b.git"
   },
   "license": "none",
   "author": {
-    "name" : "Marcus Downing",
-    "email" : "marcus@bang-on.net",
-    "url" : "http://www.bang-on.net/"
+    "name": "Marcus Downing",
+    "email": "marcus@bang-on.net",
+    "url": "http://www.bang-on.net/"
   },
   "directories": {
     "docs": "docs"
@@ -19,7 +19,6 @@
   "dependencies": {
     "grunt": "~0.4.5",
     "load-grunt-tasks": "git://github.com/sindresorhus/load-grunt-tasks.git#master",
-
     "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-concat": "~0.5.1",
     "grunt-contrib-jshint": "~0.10.0",
@@ -31,7 +30,6 @@
     "grunt-image-resize": "~0.4.0",
     "grunt-responsive-images": "0.1.4",
     "grunt-contrib-watch": "~0.6.1",
-
     "lodash-node": ""
   },
   "config": {
@@ -39,4 +37,3 @@
     "min": false
   }
 }
-

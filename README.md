@@ -59,7 +59,10 @@ These details will be directly copied into the plugin's header and used by WordP
     "grunt": "",
     "plugin-b": "git://github.com/marcusatbang/plugin-b.git#master"
   },
-  "namespace": "MrFantastic\\fantastic_plugin"
+  "namespace": "MrFantastic\\fantastic_plugin",
+  "pluginDependencies": [
+    "jetpack"
+  ]
 }
 ```
 
@@ -68,6 +71,7 @@ You need to keep the two `dependencies`. You can add other dependencies if you w
 Most of the fields in this file match the Grunt specification. The non-standard ones are:
 
  * `namespace`: The PHP namespace of all your plugin's classes and functions.
+ * `pluginDependencies`: Any other WordPress plugins that must be loaded for your plugin to work.
 
 If you choose not to use a PHP namespace for your plugin, don't omit the field.
 Instead put this in your `package.json` file:
@@ -77,6 +81,9 @@ Instead put this in your `package.json` file:
 ```
 
 Note that backslashes must be correctly escaped as `\\` in JSON.
+
+The `pluginDependencies` list should only be used for plugins that absolutely *must* be loaded
+for your plugin to work. If any of these plugins isn't enabled, your plugin will lot load.
 
 ### Install node modules
 

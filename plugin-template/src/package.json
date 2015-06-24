@@ -19,6 +19,8 @@
     "grunt": "",
     "plugin-b": "git://github.com/marcusatbang/plugin-b.git#master"
   },
-  "namespace": "namespace"
+  "namespace": "namespace",
+  "pluginDependencies": [
+  ]
 }
 

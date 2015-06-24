@@ -13,6 +13,10 @@ module.exports = function (grunt) {
   var namespaceEscaped = namespace.replace('\\', '\\\\');
   grunt.log.writeln("Namespace: "+namespace);
 
+  if (_.has(grunt.pkg, "pluginDependencies") && !_.isEmpty(grunt.pkg.pluginDependencies)) {
+    grunt.log.writeln("Plugin dependencies: "+grunt.pkg.pluginDependencies.join(", "));
+  }
+
   grunt.config.merge({
     concat: {
 
@@ -41,11 +45,13 @@ module.exports = function (grunt) {
 
             var initCode;
             var activationCode = "";
+            var deactivationCode = "";
             var includesCode = "";
             var widgetsCode = "";
             var widgetsRegisterCode = "";
             var settingsCode = "";
             var stylesheetCode = "";
+            var javascriptCode = "";
 
             if (fs.existsSync("lib/init.php")) {
               initCode = "include_once 'lib/"+namespacePath+"/init.php';\n";
@@ -53,8 +59,47 @@ module.exports = function (grunt) {
 
             var activateDir = grunt.dirs.pluginSource+'/activate/';
             _.forEach(fs.readdirSync(activateDir), function (file) {
-              activationCode = "register_activation_hook(__FILE__, function () {\n  include_once 'lib/activate/"+file+"';\n});\n";
+              if (_.endsWith(file, ".php")) {
+                activationCode += "  include_once 'lib/activate/"+file+"';\n";
+              }
             });
+            if (activationCode != "") {
+              activationCode = "register_activation_hook(__FILE__, function () {\n"+activationCode+"});\n";
+            }
+
+            var deactivateDir = grunt.dirs.pluginSource+'/deactivate/';
+            _.forEach(fs.readdirSync(deactivateDir), function (file) {
+              if (_.endsWith(file, ".php")) {
+                activationCode += "  include_once 'lib/deactivate/"+file+"';\n";
+              }
+            });
+            if (deactivationCode != "") {
+              deactivationCode = "register_deactivation_hook(__FILE__, function () {\n"+deactivationCode+"});\n";
+            }
+
+            var dependenciesCode = "";
+            if (_.has(grunt.pkg, "pluginDependencies") && !_.isEmpty(grunt.pkg.pluginDependencies)) {
+              var depsList = _.map(grunt.pkg.pluginDependencies, function (dep) { return "'"+dep+"'"; }).join(", ");
+              dependenciesCode = grunt.file.read(grunt.dirs.coreSource+"/parts/main-deps.php");
+              dependenciesCode = grunt.template.process(dependenciesCode, {
+                data: {
+                  deps: depsList,
+                }
+              });
+
+              // dependenciesCode = "$pluginDependencies = array("+_.map(grunt.pkg.pluginDependencies, function (dep) { return "'"+dep+"'"; }).join(", ")+");\n"+
+              //   "$inactivePlugins = array();\n"+
+              //   "include_once( ABSPATH . 'wp-admin/includes/plugin.php' );\n"+
+              //   "foreach ($pluginDependencies as $dep) {\n"+
+              //   "  if (!is_plugin_active($dep)) {\n"+
+              //   "    $inactivePlugins[] = $dep;\n"+
+              //   "  }\n"+
+              //   "}\n"+
+              //   "if (!empty($inactivePlugins)) {\n"+
+              //   "  if (is_admin()) "
+              //   "  return;\n"+
+              //   "}\n";
+            }
 
             // var includesDir = "./lib/";
             var includesDir = grunt.dirs.pluginSource+"/lib/";
@@ -66,21 +111,21 @@ module.exports = function (grunt) {
 
             if (fs.existsSync("lib/settings.php")) {
               var settingsFunction = "add_options_page";
-              settingsCode = "add_action('admin_menu', function () {\n  "+settingsFunction+"('"+grunt.pkg.title+"', '"+grunt.pkg.title+"', 'manage_options', '"+pluginName+"', function () {\n    include '"+pluginName+"-settings.php';\n  });\n});\n";
+              settingsCode = "add_action('admin_menu', function () {\n    "+settingsFunction+"('"+grunt.pkg.title+"', '"+grunt.pkg.title+"', 'manage_options', '"+pluginName+"', function () {\n      include '"+pluginName+"-settings.php';\n    });\n  });\n";
             }
 
             var widgetsDir = grunt.dirs.pluginSource+'/widgets/';
             _.forEach(fs.readdirSync(widgetsDir), function (file) {
               if (_.endsWith(file, ".php")) {
-                widgetsRegisterCode += "  include_once 'widgets/"+file+"';\n";
+                widgetsRegisterCode += "    include_once 'widgets/"+file+"';\n";
                 if (_.endsWith(file, "_Widget.class.php")) {
                   className = file.replace('.class.php', '');
-                  widgetsRegisterCode += "  register_widget('\\"+namespace+"\\"+className+"');\n";
+                  widgetsRegisterCode += "    register_widget('\\"+namespace+"\\"+className+"');\n";
                 }
               }
             });
             if (widgetsRegisterCode != "") {
-              widgetsCode += "\nadd_action('widgets_init', function () {\n"+widgetsRegisterCode+"});\n\n";
+              widgetsCode += "\n  add_action('widgets_init', function () {\n"+widgetsRegisterCode+"  });\n\n";
             }
 
             var i18nCode = "load_plugin_textdomain('"+pluginName+"', false, dirname(plugin_basename(__FILE__)).'/languages');";
@@ -92,12 +137,17 @@ module.exports = function (grunt) {
             return grunt.template.process(src, {
               data: {
                 banner: pluginBanner,
+                namespace: namespace,
                 init: initCode,
                 activation: activationCode,
+                deactivation: deactivationCode,
+                dependencies: dependenciesCode,
                 settings: settingsCode,
                 includes: includesCode,
                 widgets: widgetsCode,
                 i18n: i18nCode,
+                stylesheets: stylesheetCode,
+                js: javascriptCode,
               }
             });
             
@@ -110,10 +160,13 @@ module.exports = function (grunt) {
         dest: grunt.dirs.dest+'/'+pluginName+'-settings.php',
         options: {
           process: function (src) {
+            var settingsClass = '\\'+namespace+'\\Settings';
+
             return grunt.template.process(src, {
               data: {
                 title: grunt.pkg.title,
                 icon: "themes",
+                settingsClass: settingsClass,
               }
             })
           }
