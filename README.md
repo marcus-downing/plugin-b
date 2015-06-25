@@ -15,8 +15,38 @@ and has no further dependencies on the tool.
 It doesn't fill your plugins with lots of useless boilerplate.
 Use this tool to help you build lightweight, perfectly formed plugins, not bloated monsters.
 
+### Requirements
+
 Plugin b requires Node.js, and works best on a Unix, Linux or Mac OS platform.
 It expects at PHP 5.3+ and a reasonably modern version of WordPress.
+
+### A note on the use of namespaces
+
+PHP has a namespace problem.
+It's not uncommon for two authors to create functions with similar names,
+such as `get_css_url`, which won't work together.
+
+There are two traditional solutions to this:
+either you prefix all your functions with the same short code, eg `my_plugin_get_css_url()`,
+or you put your whole plugin in a single class and methods with `MyPlugin::get_css_url()` or `$pluginInstance->get_css_url()`.
+Many plugin-authoring guides will tell you to use a class as a container for your plugin,
+as a way of keeping your functions separate from the global namespace.
+I disagree, because a class is not the same thing as a namespace.
+A class should be used for logical elements which may be used multiple times,
+and which have connect data and behaviour.
+A namespace should be used to group together functions, classes, constants and other things
+that need to be isolated to prevent conflicts.
+
+I therefore opted when building this to use real PHP namespaces instead.
+This does have the serious effect of requiring you host your sites somewhere that has at least PHP 5.3,
+but since that version was released in 2009 and comes with a large number of other improvements
+such as anonymous functions, we feel its time is overdue.
+If your hosting company doesn't offer you PHP 5.3, urge them to upgrade or find a better place to host.
+
+When writing a plugin against this tool, you are expected to use your namespace throughout.
+You are still free to put your plugin in a class if you wish, but not required to.
+You should pick a namespace that won't conflict with any other plugins.
+
 
 ## Getting started
 
