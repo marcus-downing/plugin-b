@@ -2,7 +2,7 @@
 
 A tool for building WordPress plugins using Grunt.
 
-## What this is
+### Not a framework
 
 This tool is intended to help you build great WordPress plugins, that follow the guidelines and perform well.
 It does this by separating out the sources you edit from the compiled plugin,
@@ -18,7 +18,7 @@ Use this tool to help you build lightweight, perfectly formed plugins, not bloat
 ### Requirements
 
 Plugin b requires Node.js, and works best on a Unix, Linux or Mac OS platform.
-It expects at PHP 5.3+ and a reasonably modern version of WordPress.
+It expects at least PHP 5.3+ and a reasonably recent version of WordPress.
 
 ### A note on the use of namespaces
 
@@ -28,17 +28,17 @@ such as `get_css_url`, which won't work together.
 
 There are two traditional solutions to this:
 either you prefix all your functions with the same short code, eg `my_plugin_get_css_url()`,
-or you put your whole plugin in a single class and methods with `MyPlugin::get_css_url()` or `$pluginInstance->get_css_url()`.
+or you put your whole plugin in a single class and methods with `PluginClass::get_css_url()` or `$pluginInstance->get_css_url()`.
 Many plugin-authoring guides will tell you to use a class as a container for your plugin,
 as a way of keeping your functions separate from the global namespace.
-I disagree, because a class is not the same thing as a namespace.
+I disagree, because a class is not the same thing as a namespace, even if bits of it are static.
 A class should be used for logical elements which may be used multiple times,
 and which have connect data and behaviour.
 A namespace should be used to group together functions, classes, constants and other things
 that need to be isolated to prevent conflicts.
 
-I therefore opted when building this to use real PHP namespaces instead.
-This does have the serious effect of requiring you host your sites somewhere that has at least PHP 5.3,
+So when building this tool, I opted to use real PHP namespaces.
+This does have the effect of requiring you host your sites somewhere that has at least PHP 5.3,
 but since that version was released in 2009 and comes with a large number of other improvements
 such as anonymous functions, we feel its time is overdue.
 If your hosting company doesn't offer you PHP 5.3, urge them to upgrade or find a better place to host.
