@@ -52,15 +52,16 @@ module.exports = function (grunt) {
             var settingsCode = "";
             var stylesheetCode = "";
             var javascriptCode = "";
+            var settingsPage = "";
 
             if (fs.existsSync("lib/init.php")) {
-              initCode = "include_once 'lib/"+namespacePath+"/init.php';\n";
+              initCode = "include_once plugin_lib_dir().'/init.php';\n";
             }
 
             var activateDir = grunt.dirs.pluginSource+'/activate/';
             _.forEach(fs.readdirSync(activateDir), function (file) {
               if (_.endsWith(file, ".php")) {
-                activationCode += "  include_once 'lib/activate/"+file+"';\n";
+                activationCode += "  include_once plugin_lib_dir().'/activate/"+file+"';\n";
               }
             });
             if (activationCode != "") {
@@ -70,7 +71,7 @@ module.exports = function (grunt) {
             var deactivateDir = grunt.dirs.pluginSource+'/deactivate/';
             _.forEach(fs.readdirSync(deactivateDir), function (file) {
               if (_.endsWith(file, ".php")) {
-                activationCode += "  include_once 'lib/deactivate/"+file+"';\n";
+                activationCode += "  include_once plugin_lib_dir().'/deactivate/"+file+"';\n";
               }
             });
             if (deactivationCode != "") {
@@ -105,7 +106,7 @@ module.exports = function (grunt) {
             var includesDir = grunt.dirs.pluginSource+"/lib/";
             _.forEach(fs.readdirSync(includesDir), function (file) {
               if (_.endsWith(file, ".php") && file != "init.php" && file != "settings.php") {
-                includesCode += "include_once 'lib/"+file+"';\n";
+                includesCode += "include_once plugin_lib_dir().'/"+file+"';\n";
               }
             });
 
@@ -117,7 +118,7 @@ module.exports = function (grunt) {
             var widgetsDir = grunt.dirs.pluginSource+'/widgets/';
             _.forEach(fs.readdirSync(widgetsDir), function (file) {
               if (_.endsWith(file, ".php")) {
-                widgetsRegisterCode += "    include_once 'widgets/"+file+"';\n";
+                widgetsRegisterCode += "    include_once plugin_widgets_dir().'/"+file+"';\n";
                 if (_.endsWith(file, "_Widget.class.php")) {
                   className = file.replace('.class.php', '');
                   widgetsRegisterCode += "    register_widget('\\"+namespace+"\\"+className+"');\n";
@@ -128,7 +129,7 @@ module.exports = function (grunt) {
               widgetsCode += "\n  add_action('widgets_init', function () {\n"+widgetsRegisterCode+"  });\n\n";
             }
 
-            var i18nCode = "load_plugin_textdomain('"+pluginName+"', false, dirname(plugin_basename(__FILE__)).'/languages');";
+            var i18nCode = "load_plugin_textdomain('"+pluginName+"', false, plugin_languages_dir());";
 
             if (_(grunt.knownStylesheets).includes('admin.css')) {
               

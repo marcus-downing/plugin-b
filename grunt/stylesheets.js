@@ -5,6 +5,8 @@ module.exports = function (grunt) {
   var fs = require('fs'),
       _ = require('lodash-node');
 
+  grunt.knownStylesheets = [];
+
   //  SASS / SCSS
   if (fs.existsSync("sass")) {
     grunt.log.writeln("Using SASS stylesheets");
@@ -24,6 +26,7 @@ module.exports = function (grunt) {
         src: 'sass/'+file,
         dest: grunt.dirs.dest+'/css/'+name+'.css'
       }
+      grunt.knownStylesheets.push(name+'.css');
     });
 
     if (!_(sassConfigs).isEmpty()) {
@@ -54,6 +57,7 @@ module.exports = function (grunt) {
         src: 'less/'+file,
         dest: grunt.dirs.dest+'/css/'+name+'.css'
       }
+      grunt.knownStylesheets.push(name+'.css');
     });
 
     if (!_(lessConfigs).isEmpty()) {
@@ -83,6 +87,14 @@ module.exports = function (grunt) {
 
         }
       }
-    })
+    });
+
+    _.forEach(fs.readdirSync("css"), function (file) {
+      if ( _(file).startsWith("_") || _(file).startsWith(".") || !_(file).endsWith(".css") ) {
+        return;
+      }
+      grunt.knownStylesheets.push(file);
+    });
   }
+  
 }

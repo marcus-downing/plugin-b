@@ -53,14 +53,14 @@ You should pick a namespace that won't conflict with any other plugins.
 Install Node.js, NPM and Grunt, using the preferred mechanism for your platform.
 
 Copy the `plugin-template` folder from this repository. Rename it to your plugin's machine name.
-It should contain two folders, `src` and `dist`.
+It should contain two folders, `src` and `trunk`.
 
 ```sh
 ~/plugin-example $ ls
-src/   dist/
+src/   trunk/
 ```
 
-You should only ever edit files in `src`. Initially the `dist` folder should be empty.
+You should only ever edit files in `src`. Initially the `trunk` folder should be empty.
 
 ### Customise the plugin info
 
@@ -133,7 +133,7 @@ In the `src` folder of your plugin, run this:
 $ make
 ```
 
-This command will build your plugin, putting all the compiled files into the `dist` folder.
+This command will build your plugin, putting all the compiled files into the `trunk` folder.
 
 You should never need to edit the `Gruntfile.js` or the `Makefile` in your `src`.
 The `Makefile` does nothing but call `grunt` and `npm` for you; it's there simply as a convenience.
@@ -191,7 +191,7 @@ class FantasticClass {
 ```
 
 Note that, for the sake of autoloading, classes will be put into folders matching the namespace.
-For example, the above class would be copied into `dist/MrFantastic/fantastic_plugin/FantasticClass.class.php`.
+For example, the above class would be copied into `trunk/MrFantastic/fantastic_plugin/FantasticClass.class.php`.
 
 ### Widgets
 
@@ -324,7 +324,21 @@ do_action('MrFantastic:fantastic_plugin:after_save_settings');
 
 Do not try to use backslashes in action or filter names, as they're unreliable.
 
+### If you intend
+
 ### Documentation
 
 Most function, classes and methods don't need documenting, only those you intend to be visible and used by other plugins and themes should be documented.
 These should be annotated with standard PHPDoc.
+
+## Publishing your plugin
+
+You may have noticed that the folder name `trunk` corresponds to the structure of WordPress plugins published on [wordpress.org](https://wordpress.org/plugins/about/).
+This is deliberate: plugins built with _Plugin b_ are intended to be easy to publish. Make sure to read the WordPress documentation on publishing a plugin.
+
+To get your plugin ready for publishing:
+
+1. Pick a name that isn't already taken, and [register that name with wordpress.org](https://wordpress.org/plugins/add/).
+
+2. Fill in the `README.txt` file in your plugin's source.
+   When you're done, put it into [the README validator](https://wordpress.org/plugins/about/validator/) to make sure it meets requirements.
