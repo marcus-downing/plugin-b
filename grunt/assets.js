@@ -24,7 +24,7 @@ module.exports = function (grunt) {
           crop: true,
           overwrite: true
         },
-        src: 'assets/banner.jpg',
+        src: 'assets/banner.{png,jpg}',
         dest: grunt.dirs.assets+'/banner-772x250.jpg'
       },
 
@@ -36,7 +36,7 @@ module.exports = function (grunt) {
           crop: true,
           overwrite: true
         },
-        src: 'assets/banner.jpg',
+        src: 'assets/banner.{png,jpg}',
         dest: grunt.dirs.assets+'/banner-1544x500.jpg'
       },
 
