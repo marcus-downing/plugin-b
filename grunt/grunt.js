@@ -8,7 +8,8 @@ module.exports = function (grunt) {
   grunt.dirs = {
     'pluginSource': path.resolve("."),
     'coreSource': path.resolve(__dirname+"/.."),
-    'dest': path.resolve("../trunk")
+    'dest': path.resolve("../trunk"),
+    'assets': path.resolve("../assets")
   };
 
   var pkgFile = path.normalize(grunt.dirs.pluginSource+'/package.json');
@@ -27,6 +28,7 @@ module.exports = function (grunt) {
   require('./stylesheets.js')(grunt);
   require('./main.js')(grunt);
   require('./i18n.js')(grunt);
+  require('./assets.js')(grunt);
   require('./docs.js')(grunt);
 
   // push the tasks
