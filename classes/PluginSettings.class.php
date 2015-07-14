@@ -2,7 +2,7 @@
 
 namespace Plugin_b;
 
-abstract class Settings implements ArrayAccess {
+abstract class PluginSettings implements ArrayAccess {
   protected $settings;
 
   public static function get() {
