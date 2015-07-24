@@ -22,6 +22,7 @@ function plugin_lib_dir() { return \plugin_dir_path().'/lib'; }
 function plugin_widgets_dir() { return \plugin_dir_path().'/widgets'; }
 function plugin_languages_dir() { return \plugin_dir_path().'/languages'; }
 
+function plugin_namespace($name) { return __NAMESPACE__.'\\'.$name; }
 function plugin_namespace_function($name) { return __NAMESPACE__.'\\'.$name; }
 function plugin_namespace_hook($name) { return "<%= hookbase %>:$name"; }
 

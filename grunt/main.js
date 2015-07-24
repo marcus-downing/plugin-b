@@ -11,11 +11,21 @@ module.exports = function (grunt) {
   var namespace = grunt.pkg.namespace.replace('^\\', '');
   var namespacePath = namespace.replace('\\', '/');
   var namespaceEscaped = namespace.replace('\\', '\\\\');
+  var debugFlag = namespace+'\\DEBUG';
   grunt.log.writeln("Namespace: "+namespace);
 
   if (_.has(grunt.pkg, "pluginDependencies") && !_.isEmpty(grunt.pkg.pluginDependencies)) {
     grunt.log.writeln("Plugin dependencies: "+grunt.pkg.pluginDependencies.join(", "));
   }
+
+  var processFunction = function (src, srcpath) {
+    return grunt.template.process(src, {
+      data: {
+        namespace: namespace,
+        DEBUG: debugFlag
+      }
+    });
+  };
 
   grunt.config.merge({
     concat: {
@@ -34,7 +44,7 @@ module.exports = function (grunt) {
               "Author: <%= pkg.author.name %>\n"+
               "Author URI: <%= pkg.author.url %>\n"+
               "Version: <%= pkg.version %>\n"+
-              "Tags: wireframe-b <%= false %>\n"+
+              "Tags: plugin-b <%= false %>\n"+
               "License: <%= pkg.license %>\n"+
               "License URI: <%= false %>\n"+
               "*/\n", {
@@ -178,6 +188,9 @@ module.exports = function (grunt) {
     copy: {
 
       classes: {
+        options: {
+          process: processFunction
+        },
         files: [{
           expand: true, 
           cwd: grunt.dirs.pluginSource+'/classes/',
@@ -196,6 +209,9 @@ module.exports = function (grunt) {
       },
 
       widgets: {
+        options: {
+          process: processFunction
+        },
         files: [{
           expand: true, 
           cwd: grunt.dirs.pluginSource+'/widgets/',
@@ -205,6 +221,9 @@ module.exports = function (grunt) {
       },
 
       lib: {
+        options: {
+          process: processFunction
+        },
         files: [{
           expand: true,
           cwd: grunt.dirs.pluginSource+'/lib/',
@@ -214,6 +233,9 @@ module.exports = function (grunt) {
       },
 
       activation: {
+        options: {
+          process: processFunction
+        },
         files: [{
           expand: true,
           cwd: grunt.dirs.pluginSource+'/activate/',
