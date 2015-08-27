@@ -8,9 +8,10 @@ module.exports = function (grunt) {
   var pluginName = grunt.pkg.name;
   grunt.log.writeln("Building '"+pluginName+"': "+grunt.pkg.title);
 
-  var namespace = grunt.pkg.namespace.replace('^\\', '');
-  var namespacePath = namespace.replace('\\', '/');
-  var namespaceEscaped = namespace.replace('\\', '\\\\');
+  var namespace = grunt.pkg.namespace.replace(/^\\/, '');
+  var namespacePath = namespace.replace(/\\/g, '/');
+  var namespaceEscaped = namespace.replace(/\\/g, '\\\\');
+  var endFunction = namespace.replace(/\\/g, '_')+'_end';
   var debugFlag = namespace+'\\DEBUG';
   grunt.log.writeln("Namespace: "+namespace);
 
@@ -47,46 +48,13 @@ module.exports = function (grunt) {
               "Tags: plugin-b <%= false %>\n"+
               "License: <%= pkg.license %>\n"+
               "License URI: <%= false %>\n"+
+              "Depend: <%= dependencies %>\n"+
               "*/\n", {
                 data: {
-                  pkg: grunt.pkg
+                  pkg: grunt.pkg,
+                  dependencies: _(grunt.pkg.pluginDependencies).join(',')
                 }
               });
-
-            var initCode;
-            var activationCode = "";
-            var deactivationCode = "";
-            var includesCode = "";
-            var widgetsCode = "";
-            var widgetsRegisterCode = "";
-            var settingsCode = "";
-            var stylesheetCode = "";
-            var javascriptCode = "";
-            var settingsPage = "";
-
-            if (fs.existsSync("lib/init.php")) {
-              initCode = "include_once plugin_lib_dir().'/init.php';\n";
-            }
-
-            var activateDir = grunt.dirs.pluginSource+'/activate/';
-            _.forEach(fs.readdirSync(activateDir), function (file) {
-              if (_.endsWith(file, ".php")) {
-                activationCode += "  include_once plugin_lib_dir().'/activate/"+file+"';\n";
-              }
-            });
-            if (activationCode != "") {
-              activationCode = "register_activation_hook(__FILE__, function () {\n"+activationCode+"});\n";
-            }
-
-            var deactivateDir = grunt.dirs.pluginSource+'/deactivate/';
-            _.forEach(fs.readdirSync(deactivateDir), function (file) {
-              if (_.endsWith(file, ".php")) {
-                activationCode += "  include_once plugin_lib_dir().'/deactivate/"+file+"';\n";
-              }
-            });
-            if (deactivationCode != "") {
-              deactivationCode = "register_deactivation_hook(__FILE__, function () {\n"+deactivationCode+"});\n";
-            }
 
             var dependenciesCode = "";
             if (_.has(grunt.pkg, "pluginDependencies") && !_.isEmpty(grunt.pkg.pluginDependencies)) {
@@ -94,6 +62,7 @@ module.exports = function (grunt) {
               dependenciesCode = grunt.file.read(grunt.dirs.coreSource+"/parts/main-deps.php");
               dependenciesCode = grunt.template.process(dependenciesCode, {
                 data: {
+                  pkg: pkg,
                   deps: depsList,
                 }
               });
@@ -112,13 +81,77 @@ module.exports = function (grunt) {
               //   "}\n";
             }
 
-            // var includesDir = "./lib/";
-            var includesDir = grunt.dirs.pluginSource+"/lib/";
-            _.forEach(fs.readdirSync(includesDir), function (file) {
-              if (_.endsWith(file, ".php") && file != "init.php" && file != "settings.php") {
-                includesCode += "include_once plugin_lib_dir().'/"+file+"';\n";
+
+            return grunt.template.process(src, {
+              data: {
+                pkg: grunt.pkg,
+                namespace: namespaceEscaped,
+                namespaced_end_fn: endFunction,
+
+                banner: pluginBanner,
+                dependencies: dependenciesCode,
               }
             });
+            
+          }
+        }
+      },
+
+
+      load: {
+        src: grunt.dirs.coreSource+'/parts/load.php',
+        dest: grunt.dirs.dest+'/lib/load.php',
+        options: {
+          process: function (src) {
+            var initCode = grunt.inc.initCode;
+            var activationCode = "";
+            var deactivationCode = "";
+            var includesCode = grunt.inc.includesCode;
+            var widgetsCode = "";
+            var widgetsRegisterCode = "";
+            var settingsCode = "";
+            var loadCode = "";
+            var stylesheetCode = "";
+            var javascriptCode = "";
+            var settingsPage = "";
+
+            if (fs.existsSync("lib/init.php")) {
+              initCode += "include_once plugin_lib_dir().'/init.php';\n";
+            }
+
+            var activateDir = grunt.dirs.pluginSource+'/activate/';
+            if (fs.existsSync(activateDir)) {
+              _.forEach(fs.readdirSync(activateDir), function (file) {
+                if (_.endsWith(file, ".php")) {
+                  activationCode += "  include_once plugin_lib_dir().'/activate/"+file+"';\n";
+                }
+              });
+              if (activationCode != "") {
+                activationCode = "register_activation_hook(__FILE__, function () {\n"+activationCode+"});\n";
+              }
+            }
+
+            var deactivateDir = grunt.dirs.pluginSource+'/deactivate/';
+            if (fs.existsSync(deactivateDir)) {
+              _.forEach(fs.readdirSync(deactivateDir), function (file) {
+                if (_.endsWith(file, ".php")) {
+                  activationCode += "  include_once plugin_lib_dir().'/deactivate/"+file+"';\n";
+                }
+              });
+              if (deactivationCode != "") {
+                deactivationCode = "register_deactivation_hook(__FILE__, function () {\n"+deactivationCode+"});\n";
+              }
+            }
+
+            // var includesDir = "./lib/";
+            var includesDir = grunt.dirs.pluginSource+"/lib/";
+            if (fs.existsSync(includesDir)) {
+              _.forEach(fs.readdirSync(includesDir), function (file) {
+                if (_.endsWith(file, ".php") && file != "init.php" && file != "settings.php") {
+                  includesCode += "include_once plugin_lib_dir().'/"+file+"';\n";
+                }
+              });
+            }
 
             if (fs.existsSync("lib/settings.php")) {
               var settingsFunction = "add_options_page";
@@ -126,17 +159,19 @@ module.exports = function (grunt) {
             }
 
             var widgetsDir = grunt.dirs.pluginSource+'/widgets/';
-            _.forEach(fs.readdirSync(widgetsDir), function (file) {
-              if (_.endsWith(file, ".php")) {
-                widgetsRegisterCode += "    include_once plugin_widgets_dir().'/"+file+"';\n";
-                if (_.endsWith(file, "_Widget.class.php")) {
-                  className = file.replace('.class.php', '');
-                  widgetsRegisterCode += "    register_widget('\\"+namespace+"\\"+className+"');\n";
+            if (fs.existsSync(widgetsDir)) {
+              _.forEach(fs.readdirSync(widgetsDir), function (file) {
+                if (_.endsWith(file, ".php")) {
+                  widgetsRegisterCode += "    include_once plugin_widgets_dir().'/"+file+"';\n";
+                  if (_.endsWith(file, "_Widget.class.php")) {
+                    className = file.replace('.class.php', '');
+                    widgetsRegisterCode += "    register_widget('\\"+namespace+"\\"+className+"');\n";
+                  }
                 }
+              });
+              if (widgetsRegisterCode != "") {
+                widgetsCode += "\n  add_action('widgets_init', function () {\n"+widgetsRegisterCode+"  });\n\n";
               }
-            });
-            if (widgetsRegisterCode != "") {
-              widgetsCode += "\n  add_action('widgets_init', function () {\n"+widgetsRegisterCode+"  });\n\n";
             }
 
             var i18nCode = "load_plugin_textdomain('"+pluginName+"', false, plugin_languages_dir());";
@@ -147,15 +182,18 @@ module.exports = function (grunt) {
 
             return grunt.template.process(src, {
               data: {
-                banner: pluginBanner,
+                pkg: grunt.pkg,
                 namespace: namespace,
+                namespaceEscaped: namespaceEscaped,
+
                 init: initCode,
                 activation: activationCode,
                 deactivation: deactivationCode,
-                dependencies: dependenciesCode,
                 settings: settingsCode,
                 includes: includesCode,
                 widgets: widgetsCode,
+                load: loadCode,
+
                 i18n: i18nCode,
                 stylesheets: stylesheetCode,
                 js: javascriptCode,
@@ -165,6 +203,7 @@ module.exports = function (grunt) {
           }
         }
       },
+
 
       settings: {
         src: grunt.dirs.coreSource+'/parts/settings.php',

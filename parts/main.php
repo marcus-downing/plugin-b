@@ -2,49 +2,27 @@
 
 <%= banner %>
 
-namespace <%= namespace %>;
+define('<%= namespace %>\\PLUGIN_FILE', __FILE__);
 
-function plugin_file() { return __FILE__; }
-function plugin_url($url) { return \plugins_url($url, __FILE__); }
-function plugin_dir_url() { return \plugin_dir_url(__FILE__); }
-function plugin_dir_path() { return \plugin_dir_path(__FILE__); }
-function plugin_basename() { return \plugin_basename( __FILE__ ); }
-
-function plugin_settings_url() { return \admin_url('<%= settingspage %>'); }
-function plugin_css_url() { return \plugin_url('css'); }
-function plugin_js_url() { return \plugin_url('js'); }
-function plugin_images_url() { return \plugin_url('images'); }
-
-function plugin_css_dir() { return \plugin_dir_path().'/classes'; }
-function plugin_js_dir() { return \plugin_dir_path().'/classes'; }
-function plugin_classes_dir() { return \plugin_dir_path().'/classes'; }
-function plugin_lib_dir() { return \plugin_dir_path().'/lib'; }
-function plugin_widgets_dir() { return \plugin_dir_path().'/widgets'; }
-function plugin_languages_dir() { return \plugin_dir_path().'/languages'; }
-
-function plugin_namespace($name) { return __NAMESPACE__.'\\'.$name; }
-function plugin_namespace_function($name) { return __NAMESPACE__.'\\'.$name; }
-function plugin_namespace_hook($name) { return "<%= hookbase %>:$name"; }
-
-<%= init %>
-<%= activation %>
-<%= deactivation %>
 $loadok = true;
-<%= dependencies %>
-if ($loadok) {
-  spl_autoload_register(function ($class) {
-    $path = plugin_classes_dir().'/'.trim(str_replace("\\", DIRECTORY_SEPARATOR, $class), DIRECTORY_SEPARATOR).'.class.php';
-    if (file_exists($path)) {
-      include $path;
-    }
-  });
+if (version_compare(PHP_VERSION, '5.3', '<')) {
+  $loadok = false;
 
-  <%= includes %>
-  <%= settings %>
-  <%= widgets %>
-  add_action('init', function () {
-    <%= i18n %>
-    <%= stylesheets %>
-    <%= js %>
-  });
+  function <%= namespaced_end_fn %>() {
+    echo '<div class=\"error\"><p>'.__('<%= pkg.title %> requires PHP 5.3 to function properly. Please upgrade PHP. The plugin has been deactivated.', '<%= pkg.name %>').'</p></div>';
+    if ( isset( $_GET['activate'] ) ) 
+      unset( $_GET['activate'] );
+  }
+
+  add_action('admin_notices', '<%= namespaced_end_fn %>');
+  return;
+}
+<%= dependencies %>
+
+if ($loadok) {
+  require 'load.php';
+} else {
+  add_action( 'admin_init', create_function('', "
+    deactivate_plugins( plugin_basename( __FILE__ ) )
+    ") );
 }

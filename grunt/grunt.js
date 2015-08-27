@@ -22,14 +22,21 @@ module.exports = function (grunt) {
   process.chdir(cwd);
   require('load-grunt-tasks')(grunt);
 
+  // prepare a couple of variables
+  grunt.inc = {
+    initCode: "",
+    includesCode: "",
+  };
+
   //  our various build modules
   grunt.defaultTasks = [ 'concat', 'copy' ];
   require('./javascript.js')(grunt);
   require('./stylesheets.js')(grunt);
-  require('./main.js')(grunt);
   require('./i18n.js')(grunt);
   require('./assets.js')(grunt);
   require('./docs.js')(grunt);
+  require('./depend.js')(grunt);
+  require('./main.js')(grunt);
 
   // push the tasks
   grunt.registerTask('default', grunt.defaultTasks);

@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "grunt": "",
-    "plugin-b": "git://github.com/marcusatbang/plugin-b.git#master"
+    "plugin-b": "git://github.com/marcusatbang/plugin-b.git#master",
+    "cmb2": "https://github.com/WebDevStudios/CMB2/"
   },
   "namespace": "namespace",
   "pluginDependencies": [

@@ -34,7 +34,7 @@ abstract class PluginSettings implements ArrayAccess {
   }
 
   public final function __set($name, $value) {
-    if (isset($this->settings[$name])
+    if (isset($this->settings[$name]))
       $this->settings[$name] = $value;
   }
 
