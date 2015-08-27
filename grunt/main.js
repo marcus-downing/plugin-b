@@ -103,14 +103,15 @@ module.exports = function (grunt) {
         dest: grunt.dirs.dest+'/lib/load.php',
         options: {
           process: function (src) {
-            var initCode = grunt.inc.initCode;
+            var bootCode = grunt.inc.bootCode;
             var activationCode = "";
             var deactivationCode = "";
             var includesCode = grunt.inc.includesCode;
+            var initCode = grunt.inc.initCode;
             var widgetsCode = "";
             var widgetsRegisterCode = "";
             var settingsCode = "";
-            var loadCode = "";
+            var loadCode = grunt.inc.loadCode;
             var stylesheetCode = "";
             var javascriptCode = "";
             var settingsPage = "";
@@ -186,13 +187,14 @@ module.exports = function (grunt) {
                 namespace: namespace,
                 namespaceEscaped: namespaceEscaped,
 
-                init: initCode,
+                boot: bootCode,
                 activation: activationCode,
                 deactivation: deactivationCode,
                 settings: settingsCode,
                 includes: includesCode,
                 widgets: widgetsCode,
                 load: loadCode,
+                init: initCode,
 
                 i18n: i18nCode,
                 stylesheets: stylesheetCode,

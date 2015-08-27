@@ -24,7 +24,7 @@ function plugin_namespace($name) { return __NAMESPACE__.'\\'.$name; }
 function plugin_namespace_function($name) { return __NAMESPACE__.'\\'.$name; }
 function plugin_namespace_hook($name) { return "<%= hookbase %>:$name"; }
 
-<%= init %>
+<%= boot %>
 <%= activation %>
 <%= deactivation %>
 
@@ -43,4 +43,5 @@ add_action('init', function () {
   <%= i18n %>
   <%= stylesheets %>
   <%= js %>
+  <%= init %>
 });

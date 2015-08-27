@@ -24,6 +24,8 @@ module.exports = function (grunt) {
 
   // prepare a couple of variables
   grunt.inc = {
+    bootCode: "",
+    loadCode: "",
     initCode: "",
     includesCode: "",
   };
